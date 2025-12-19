@@ -25,7 +25,7 @@ class UserService {
 
   async updateUser(userId, userData) {
     return await apiService.request('updateUser', {
-      method: 'PUT',
+      method: 'PATCH',
       body: JSON.stringify(userData),
       urlOverride: `/users/update/${userId}`
     });
@@ -38,9 +38,16 @@ class UserService {
     });
   }
 
-  // --- NEW: Get Team Leads ---
   async getTeamLeads() {
     return await apiService.request('getTeamLeads', { method: 'GET' });
+  }
+
+  // --- NEW: Admin Reset Password ---
+  async resetUserPassword(userId) {
+    return await apiService.request('resetUserPassword', {
+      method: 'PUT', // Assuming PUT since it updates resource, check with backend if POST
+      urlOverride: `/users/reset_password/${userId}`
+    });
   }
 }
 

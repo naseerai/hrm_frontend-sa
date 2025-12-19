@@ -1,23 +1,23 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { theme } from 'antd';
+import React, { createContext, useContext, useState } from 'react';
 
-// LIGHT THEME COLORS
+// --- DEVELOPER COLOR CONFIGURATION ---
+// Change these hex codes to whatever you like!
+
 const defaultLightTheme = {
-  colorPrimary: '#1677ff',
-  colorBgContainer: '#ffffff',
-  colorBgLayout: '#f0f2f5',
+  colorPrimary: '#1677ff',       // Your Primary Blue
+  colorBgContainer: '#ffffff',   // White Card Background
+  colorBgLayout: '#f0f2f5',      // Light Grey Background
   colorText: '#000000',          // Black Text
   colorTextSecondary: '#666666', // Grey Text
   isDark: false
 };
 
-// DARK THEME COLORS (UPDATED FOR HIGH CONTRAST)
 const defaultDarkTheme = {
-  colorPrimary: '#1677ff',
-  colorBgContainer: '#141414',   // Dark Card
+  colorPrimary: '#1677ff',       // Keep Blue or change to Gold/Purple
+  colorBgContainer: '#141414',   // Dark Card Background
   colorBgLayout: '#000000',      // Pitch Black Background
-  colorText: '#ffffff',          // Pure White Text (IMPORTANT)
-  colorTextSecondary: '#a6a6a6', // Light Grey for description
+  colorText: '#ffffff',          // White Text
+  colorTextSecondary: '#a6a6a6', // Light Grey Text
   isDark: true
 };
 
@@ -32,22 +32,13 @@ export const useTheme = () => {
 };
 
 export const ThemeProvider = ({ children }) => {
-  // LocalStorage nundi theme load cheyyadam
+  // Only keep Dark Mode toggle logic
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return localStorage.getItem('theme') === 'dark';
   });
-  
-  const [lightTheme, setLightTheme] = useState(() => {
-    const saved = localStorage.getItem('lightTheme');
-    return saved ? JSON.parse(saved) : defaultLightTheme;
-  });
-  
-  const [darkTheme, setDarkTheme] = useState(() => {
-    const saved = localStorage.getItem('darkTheme');
-    return saved ? JSON.parse(saved) : defaultDarkTheme;
-  });
 
-  const currentTheme = isDarkMode ? darkTheme : lightTheme;
+  // Use the hardcoded themes directly
+  const currentTheme = isDarkMode ? defaultDarkTheme : defaultLightTheme;
 
   const toggleTheme = () => {
     const newMode = !isDarkMode;
@@ -55,33 +46,11 @@ export const ThemeProvider = ({ children }) => {
     localStorage.setItem('theme', newMode ? 'dark' : 'light');
   };
 
-  const updateLightTheme = (newTheme) => {
-    setLightTheme(newTheme);
-    localStorage.setItem('lightTheme', JSON.stringify(newTheme));
-  };
-
-  const updateDarkTheme = (newTheme) => {
-    setDarkTheme(newTheme);
-    localStorage.setItem('darkTheme', JSON.stringify(newTheme));
-  };
-
-  const resetThemes = () => {
-    setLightTheme(defaultLightTheme);
-    setDarkTheme(defaultDarkTheme);
-    localStorage.removeItem('lightTheme');
-    localStorage.removeItem('darkTheme');
-  };
-
   return (
     <ThemeContext.Provider value={{
       isDarkMode,
       currentTheme,
-      lightTheme,
-      darkTheme,
-      toggleTheme,
-      updateLightTheme,
-      updateDarkTheme,
-      resetThemes
+      toggleTheme // Users can still toggle Light/Dark mode via Navbar if you want
     }}>
       {children}
     </ThemeContext.Provider>

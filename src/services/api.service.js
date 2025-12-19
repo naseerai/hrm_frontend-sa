@@ -10,12 +10,10 @@ class ApiService {
       updateUser: '/users/update',
       changePassword: '/users/change_password',
       getTeamLeads: '/users/team/leads',
-      
-      // --- CAREERS ENDPOINTS ---
       createJob: '/careers/create/job',
       getInternalJobs: '/careers/list/internal/jobs',
-      getExternalJobs: '/careers/list/external/jobs'
-      // Update & Delete are dynamic, handled in service
+      getExternalJobs: '/careers/list/external/jobs',
+      resetUserPassword: '/users/reset_password'
     };
   }
 
@@ -44,13 +42,36 @@ class ApiService {
 
     try {
       const response = await fetch(url, config);
+
+      // ---------------------------------------------------------
+      // FIX FOR 204 (DELETE SUCCESS)
+      // ---------------------------------------------------------
+      if (response.status === 204) {
+        return { success: true }; // No JSON body to parse, just return success
+      }
+
+      // ---------------------------------------------------------
+      // AUTOMATIC LOGOUT (401)
+      // ---------------------------------------------------------
+      if (response.status === 401) {
+        if (endpointKey !== 'login') {
+            console.warn("Session Expired. Auto logging out...");
+            localStorage.clear(); 
+            window.location.href = '/'; 
+            return { success: false, error: 'Session Expired' };
+        }
+      }
+
+      // Parse JSON only if it's NOT 204
       const data = await response.json();
       
       if (!response.ok) {
         throw new Error(data.detail || data.message || 'Request failed');
       }
       return { success: true, data };
+
     } catch (error) {
+      // console.error("API Error:", error);
       return { success: false, error: error.message };
     }
   }

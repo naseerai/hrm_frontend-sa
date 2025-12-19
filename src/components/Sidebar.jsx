@@ -18,7 +18,7 @@ const Sidebar = ({ collapsed, onMenuSelect }) => {
     { key: 'careers', icon: <RocketOutlined />, label: 'Careers & Jobs' },
     
     { key: 'attendance', icon: <FileTextOutlined />, label: 'Attendance' },
-    { key: 'profile', icon: <UserOutlined />, label: 'My Profile' },
+    // { key: 'profile', icon: <UserOutlined />, label: 'My Profile' },
   ];
 
   return (
