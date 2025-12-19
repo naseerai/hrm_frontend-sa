@@ -9,10 +9,11 @@ class UserService {
     return await apiService.request('getAllUsers', { method: 'GET' });
   }
 
-  async createUser(userData) {
+  // UPDATED: Now accepts FormData directly (No JSON.stringify)
+  async createUser(formData) {
     return await apiService.request('createUser', {
       method: 'POST',
-      body: JSON.stringify(userData)
+      body: formData 
     });
   }
 
@@ -23,10 +24,11 @@ class UserService {
     });
   }
 
-  async updateUser(userId, userData) {
+  // UPDATED: Now accepts FormData directly
+  async updateUser(userId, formData) {
     return await apiService.request('updateUser', {
-      method: 'PATCH',
-      body: JSON.stringify(userData),
+      method: 'PUT',
+      body: formData, 
       urlOverride: `/users/update/${userId}`
     });
   }
@@ -42,10 +44,9 @@ class UserService {
     return await apiService.request('getTeamLeads', { method: 'GET' });
   }
 
-  // --- NEW: Admin Reset Password ---
   async resetUserPassword(userId) {
     return await apiService.request('resetUserPassword', {
-      method: 'PUT', // Assuming PUT since it updates resource, check with backend if POST
+      method: 'PUT',
       urlOverride: `/users/reset_password/${userId}`
     });
   }

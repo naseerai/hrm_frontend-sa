@@ -32,9 +32,14 @@ class ApiService {
     const { urlOverride, ...fetchOptions } = options;
 
     const headers = {
-      'Content-Type': 'application/json',
       ...options.headers
     };
+
+    // FIX: If body is FormData (Image Upload), DO NOT set Content-Type to JSON
+    // Browser will automatically set 'multipart/form-data' with boundary
+    if (!(options.body instanceof FormData)) {
+        headers['Content-Type'] = 'application/json';
+    }
 
     if (token) headers['Authorization'] = `Bearer ${token}`;
 
@@ -43,16 +48,10 @@ class ApiService {
     try {
       const response = await fetch(url, config);
 
-      // ---------------------------------------------------------
-      // FIX FOR 204 (DELETE SUCCESS)
-      // ---------------------------------------------------------
       if (response.status === 204) {
-        return { success: true }; // No JSON body to parse, just return success
+        return { success: true };
       }
 
-      // ---------------------------------------------------------
-      // AUTOMATIC LOGOUT (401)
-      // ---------------------------------------------------------
       if (response.status === 401) {
         if (endpointKey !== 'login') {
             console.warn("Session Expired. Auto logging out...");
@@ -62,7 +61,6 @@ class ApiService {
         }
       }
 
-      // Parse JSON only if it's NOT 204
       const data = await response.json();
       
       if (!response.ok) {
@@ -71,7 +69,6 @@ class ApiService {
       return { success: true, data };
 
     } catch (error) {
-      // console.error("API Error:", error);
       return { success: false, error: error.message };
     }
   }
