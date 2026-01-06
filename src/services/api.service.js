@@ -1,6 +1,6 @@
 class ApiService {
   constructor() {
-    this.baseURL = 'http://72.61.233.104:9000';
+    this.baseURL = 'https://hrm-backend-q7xc.onrender.com';
     this.endpoints = {
       login: '/login/users',
       getAllUsers: '/users/allusers',
@@ -13,7 +13,27 @@ class ApiService {
       createJob: '/careers/create/job',
       getInternalJobs: '/careers/list/internal/jobs',
       getExternalJobs: '/careers/list/external/jobs',
-      resetUserPassword: '/users/reset_password'
+      resetUserPassword: '/users/reset_password',
+      
+      // Leave Endpoints
+      getYearlyStats: '/leaves/users', 
+      getMonthlyStats: '/leaves/users',
+      applyLeave: '/leaves/apply',
+      getAllApplications: '/leaves/all/applications',
+      getLeaveDetails: '/leaves/get/leave_application/details/',
+      getUserLeaveHistory: '/leaves/get/user/leaves/',
+      reviewLeave: '/leaves/applications',
+
+      // --- PERMISSION ENDPOINTS ---
+      applyPermission: '/leaves/permission/apply/', 
+      reviewPermission: '/leaves/permission/review/', 
+
+      // ATTENDANCE
+      checkIn: '/attendace/checkin',
+      checkOut: '/attendace/checkout',
+      getTodayAttendance: '/attendace/get_attendance',
+      getTeamAttendanceAnalysis: '/attendace/hr/attendance/analysis/',
+      updateAttendance: '/attendace/hr/attendance/update' 
     };
   }
 
@@ -22,21 +42,26 @@ class ApiService {
   }
 
   async request(endpointKey, options = {}) {
-    const url = options.urlOverride 
-      ? `${this.baseURL}${options.urlOverride}` 
-      : this.getURL(endpointKey);
+    // --- CHANGED LOGIC START ---
+    // If urlOverride starts with 'http', use it directly. Otherwise, append to baseURL.
+    let url;
+    if (options.urlOverride && options.urlOverride.startsWith('http')) {
+        url = options.urlOverride;
+    } else {
+        url = options.urlOverride 
+        ? `${this.baseURL}${options.urlOverride}` 
+        : this.getURL(endpointKey);
+    }
+    // --- CHANGED LOGIC END ---
 
     let token = localStorage.getItem('access_token');
     if (token) token = token.replace(/^"|"$/g, '');
 
     const { urlOverride, ...fetchOptions } = options;
 
-    const headers = {
-      ...options.headers
-    };
+    const headers = { ...options.headers };
 
-    // FIX: If body is FormData (Image Upload), DO NOT set Content-Type to JSON
-    // Browser will automatically set 'multipart/form-data' with boundary
+    // Handle FormData vs JSON content type automatically
     if (!(options.body instanceof FormData)) {
         headers['Content-Type'] = 'application/json';
     }
@@ -48,26 +73,18 @@ class ApiService {
     try {
       const response = await fetch(url, config);
 
-      if (response.status === 204) {
-        return { success: true };
-      }
+      if (response.status === 204) return { success: true };
 
-      if (response.status === 401) {
-        if (endpointKey !== 'login') {
-            console.warn("Session Expired. Auto logging out...");
-            localStorage.clear(); 
-            window.location.href = '/'; 
-            return { success: false, error: 'Session Expired' };
-        }
+      if (response.status === 401 && endpointKey !== 'login') {
+         localStorage.clear(); 
+         window.location.href = '/'; 
+         return { success: false, error: 'Session Expired' };
       }
 
       const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || data.message || 'Request failed');
       
-      if (!response.ok) {
-        throw new Error(data.detail || data.message || 'Request failed');
-      }
       return { success: true, data };
-
     } catch (error) {
       return { success: false, error: error.message };
     }

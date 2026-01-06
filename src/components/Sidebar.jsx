@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout, Menu, Typography } from 'antd';
 import { 
-  AppstoreOutlined, TeamOutlined, UserOutlined, FileTextOutlined, RocketOutlined, 
-  PlusCircleOutlined, UnorderedListOutlined, FileSearchOutlined 
+  AppstoreOutlined, TeamOutlined, UserOutlined, RocketOutlined,
+  SolutionOutlined, CalendarOutlined, ClockCircleOutlined, AuditOutlined
 } from '@ant-design/icons';
 import { useTheme } from '../context/ThemeContext';
 
@@ -12,24 +12,34 @@ const { Title } = Typography;
 const Sidebar = ({ collapsed, onMenuSelect }) => {
   const { currentTheme, isDarkMode } = useTheme();
   
-  // Menu Items Structure
-  const items = [
+  const menuItems = [
     { key: 'dashboard', icon: <AppstoreOutlined />, label: 'Dashboard' },
     { key: 'users', icon: <TeamOutlined />, label: 'User Management' },
     
-    // CAREERS SUB-MENU
+    // CAREERS
     { 
       key: 'careers', 
       icon: <RocketOutlined />, 
-      label: 'Careers & Jobs',
+      label: 'Careers',
       children: [
-        { key: 'create-job', icon: <PlusCircleOutlined />, label: 'Create Job' },
-        { key: 'job-posts', icon: <UnorderedListOutlined />, label: 'Job Posts' },
-        { key: 'applications', icon: <FileSearchOutlined />, label: 'Applications' }
+        { key: 'create-job', label: 'Create Job' },
+        { key: 'job-posts', label: 'Job Posts' },
+        { key: 'applications', label: 'Applications' }
+      ]
+    },
+
+    // NEW HR MODULE
+    {
+      key: 'hr',
+      icon: <SolutionOutlined />,
+      label: 'HR Module',
+      children: [
+        { key: 'attendance', icon: <ClockCircleOutlined />, label: 'Attendance' },
+        { key: 'leave-management', icon: <AuditOutlined />, label: 'Leave Management' },
+        { key: 'calendar', icon: <CalendarOutlined />, label: 'Company Calendar' }
       ]
     },
     
-    { key: 'attendance', icon: <FileTextOutlined />, label: 'Attendance' },
     { key: 'profile', icon: <UserOutlined />, label: 'My Profile' },
   ];
 
@@ -47,14 +57,16 @@ const Sidebar = ({ collapsed, onMenuSelect }) => {
       }}
     >
       <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Title level={4} style={{ margin: 0, color: currentTheme.colorPrimary }}>HRM Portal</Title>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 32, height: 32, background: currentTheme.colorPrimary, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>H</div>
+            {!collapsed && <Title level={4} style={{ margin: 0, color: currentTheme.colorText }}>HRM Portal</Title>}
+        </div>
       </div>
-      
       <Menu
         theme={isDarkMode ? 'dark' : 'light'}
         mode="inline"
         defaultSelectedKeys={['dashboard']}
-        items={items}
+        items={menuItems}
         onClick={({ key }) => onMenuSelect(key)}
         style={{ marginTop: 10, background: 'transparent', borderRight: 0 }}
       />

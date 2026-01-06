@@ -14,6 +14,10 @@ import Profile from './Profile'; // Import the New Profile Component
 import Careers from './careers/Careers'; // Old file (Create Job) - Rename to CreateJob.jsx better
 import JobPosts from './careers/JobPosts'; // New file
 import JobApplications from './careers/JobApplications'; // New file (Create basic one)
+import Attendance from '../hr/Attendance';
+import LeaveManagement from '../hr/LeaveManagement';
+import CompanyCalendar from '../hr/CompanyCalendar';
+
 
 const { Content } = Layout;
 
@@ -65,6 +69,7 @@ const Dashboard = () => {
       
       // NEW PROFILE CASE
       case 'profile':
+        return <Profile user={currentUser} />;
          // CAREER SUB-MENUS
   case 'create-job':
     return <Careers />; // Reuse your existing Careers.jsx logic here
@@ -72,7 +77,12 @@ const Dashboard = () => {
     return <JobPosts />;
   case 'applications':
     return <JobApplications />; // Create a basic placeholder for now
-        return <Profile user={currentUser} />;
+       case 'attendance':
+    return <Attendance />;
+  case 'leave-management':
+    return <LeaveManagement />;
+  case 'calendar':
+    return <CompanyCalendar />;  
         
       default:
         return <DashboardHome currentUser={currentUser} />;

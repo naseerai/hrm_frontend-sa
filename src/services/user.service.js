@@ -9,11 +9,13 @@ class UserService {
     return await apiService.request('getAllUsers', { method: 'GET' });
   }
 
-  // UPDATED: Now accepts FormData directly (No JSON.stringify)
+  // --- UPDATED: Create User uses specific IP ---
   async createUser(formData) {
     return await apiService.request('createUser', {
       method: 'POST',
-      body: formData 
+      body: formData,
+      // Direct IP Address Override
+      urlOverride: 'http://72.61.233.104:9000/users/create/user'
     });
   }
 
@@ -24,7 +26,6 @@ class UserService {
     });
   }
 
-  // UPDATED: Now accepts FormData directly
   async updateUser(userId, formData) {
     return await apiService.request('updateUser', {
       method: 'PUT',
