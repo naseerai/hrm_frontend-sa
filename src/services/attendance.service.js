@@ -7,7 +7,7 @@ class AttendanceService {
     const formData = new FormData();
     formData.append('image1', imageFile);
     // userId moved to query param as per previous fix
-    const url = `http://72.61.233.104:9000/attendace/validate/images?user_id=${userId}`;
+    const url = `https://hrm-backend.wapsend.in/attendace/validate/images?user_id=${userId}`;
 
     let token = localStorage.getItem('access_token');
     if (token) token = token.replace(/^"|"$/g, ''); 
