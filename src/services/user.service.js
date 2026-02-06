@@ -15,7 +15,7 @@ class UserService {
       method: 'POST',
       body: formData,
       // Direct IP Address Override
-      urlOverride: 'https://72.61.233.104:9000/users/create/user'
+      urlOverride: 'hrm-backend.wapsend.in/users/create/user'
     });
   }
 
