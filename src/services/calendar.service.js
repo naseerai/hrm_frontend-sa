@@ -10,26 +10,27 @@ class CalendarService {
   }
 
   // 2. Add Holidays (POST: /calendar/holidays)
-  // Expects: [ { name, holiday_date, ... } ]
   async addHolidays(holidaysList) {
     return await apiService.request('addHolidays', {
       method: 'POST',
-      body: JSON.stringify(holidaysList) 
+      body: JSON.stringify(holidaysList),
+      // FIX: Added urlOverride explicitly to ensure correct path
+      urlOverride: '/calendar/holidays' 
     });
   }
 
   // 3. Update Holidays (PATCH: /calendar/update/holidays)
-  // Expects: [ { id, description, holiday_type } ]
   async updateHolidays(holidaysList) {
     return await apiService.request('updateHolidays', {
       method: 'PATCH',
-      body: JSON.stringify(holidaysList)
+      body: JSON.stringify(holidaysList),
+      // FIX: Added urlOverride
+      urlOverride: '/calendar/update/holidays' 
     });
   }
 
   // 4. Delete Holidays (DELETE: /calendar/holidays?ids=ID1,ID2)
   async deleteHolidays(idsArray) {
-    // Convert array to comma separated string
     const idsString = idsArray.join(',');
     return await apiService.request('deleteHolidays', {
       method: 'DELETE',
